@@ -1,0 +1,14 @@
+[Unit]
+Description=Simple Obsidian Doc Server
+After=network.target
+
+[Service]
+User=your-username
+WorkingDirectory=/home/your-username/docserver
+ExecStart=/usr/bin/python3 /home/your-username/docserver/docserver.py
+Environment=PYTHONUNBUFFERED=1
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
