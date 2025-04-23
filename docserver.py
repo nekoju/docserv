@@ -45,6 +45,7 @@ def doc_handler(filename):
 # todo add list path
 @app.route("/list", methods=["GET"])
 def list_docs(directory=BASE_DIR, delimiter=''):
+    check_auth()
     files = []
     for root, _, filenames in os.walk(directory):
         for name in filenames:
