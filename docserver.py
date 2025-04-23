@@ -12,7 +12,11 @@ try:
     PORT = sys.argv[2]
 except IndexError as e:
    PORT = 8080
-DOC_TOKEN = os.environ.get("DOC_TOKEN", "changeme")
+try:
+    DOC_TOKEN = sys.argv[3]
+except IndexError as e:
+    print("no DOC_TOKEN specified, using default")
+    DOC_TOKEN = "changeme"
 
 def check_auth():
     auth = request.authorization
@@ -38,6 +42,7 @@ def doc_handler(filename):
             f.write(content)
         return Response("OK", mimetype="text/plain")
 
+# todo add list path
 @app.route("/list", methods=["GET"])
 def list_docs(directory=BASE_DIR, delimiter=''):
     files = []
@@ -48,7 +53,7 @@ def list_docs(directory=BASE_DIR, delimiter=''):
     else:
         return Response("\n".join(files) + "\n", mimetype="text/plain")
 
-@app.route("/alias", methods=["GET"])
+@app.route("/setup", methods=["GET"])
 def return_alias():
     with open(f"alias.sh", "r", encoding="utf-8") as f:
         return Response(f.read(), mimetype="text/plain")
