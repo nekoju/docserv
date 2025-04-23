@@ -23,7 +23,7 @@ def check_auth():
     if not auth or auth.username != DOC_TOKEN:
         abort(401, "Unauthorized")
 
-@app.route("/doc/<path:filename>", methods=["GET", "POST"])
+@app.route("/docserver/doc/<path:filename>", methods=["GET", "POST"])
 def doc_handler(filename):
     check_auth()
     full_path = os.path.join(BASE_DIR, filename)
@@ -43,7 +43,7 @@ def doc_handler(filename):
         return Response("OK", mimetype="text/plain")
 
 # todo add list path
-@app.route("/list", methods=["GET"])
+@app.route("/docserver/list", methods=["GET"])
 def list_docs(directory=BASE_DIR, delimiter=''):
     check_auth()
     files = []
@@ -54,7 +54,7 @@ def list_docs(directory=BASE_DIR, delimiter=''):
     else:
         return Response("\n".join(files) + "\n", mimetype="text/plain")
 
-@app.route("/setup", methods=["GET"])
+@app.route("/docserver/setup", methods=["GET"])
 def return_alias():
     with open(f"alias.sh", "r", encoding="utf-8") as f:
         return Response(f.read(), mimetype="text/plain")
