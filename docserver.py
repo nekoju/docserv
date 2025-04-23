@@ -48,6 +48,10 @@ def list_docs(directory=BASE_DIR, delimiter=''):
     else:
         return Response("\n".join(files) + "\n", mimetype="text/plain")
 
+@app.route("/alias", methods=["GET"])
+def return_alias():
+    with open(f"alias.sh", "r", encoding="utf-8") as f:
+        return Response(f.read(), mimetype="text/plain")
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT)
-
