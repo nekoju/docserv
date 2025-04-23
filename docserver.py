@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-from flask import Flask, request, abort, Response
 import os
+import sys
+from flask import Flask, request, abort, Response
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
-BASE_DIR = os.environ.get("DOC_PATH", "test")
+BASE_DIR = sys.argv[1]
+try:
+    PORT = sys.argv[2]
+except IndexError as e:
+   PORT = 8080
 DOC_TOKEN = os.environ.get("DOC_TOKEN", "changeme")
 
 def check_auth():
@@ -34,14 +39,15 @@ def doc_handler(filename):
         return Response("OK", mimetype="text/plain")
 
 @app.route("/list", methods=["GET"])
-def list_docs():
+def list_docs(directory=BASE_DIR, delimiter=''):
     files = []
-    for root, _, filenames in os.walk(BASE_DIR):
+    for root, _, filenames in os.walk(directory):
         for name in filenames:
-            rel_path = os.path.relpath(os.path.join(root, name), BASE_DIR)
+            rel_path = os.path.relpath(os.path.join(root, name), directory)
             files.append(rel_path)
-    return Response("\n".join(files) + "\n", mimetype="text/plain")
+    else:
+        return Response("\n".join(files) + "\n", mimetype="text/plain")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=PORT)
 
