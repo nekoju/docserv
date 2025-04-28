@@ -23,7 +23,7 @@ def check_auth():
     if not auth or auth.username != DOC_TOKEN:
         abort(401, "Unauthorized")
 
-@app.route("/docserver/doc/<path:filename>", methods=["GET", "POST"])
+@app.route("/docserver/doc/<path:filename>", methods=["GET", "POST", "DELETE"])
 def doc_handler(filename):
     check_auth()
     full_path = os.path.join(BASE_DIR, filename)
@@ -40,7 +40,11 @@ def doc_handler(filename):
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
         with open(full_path, "w", encoding="utf-8") as f:
             f.write(content)
-        return Response("OK", mimetype="text/plain")
+        return Response("OK\n", mimetype="text/plain")
+
+    elif request.method == "DELETE":
+        os.remove(full_path)
+        return Response("OK\n", mimetype="text/plain")
 
 # todo add list path
 @app.route("/docserver/list", methods=["GET"])
